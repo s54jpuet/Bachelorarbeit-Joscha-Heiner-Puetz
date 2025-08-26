@@ -13,7 +13,7 @@ import tableReading
 def plot_for_tables_of_xy(typ, l, axis='x', mode='single', save=True):
     """
     Plottet v0 gegen entweder x (erste Spalte) oder y (zweite Spalte).
-    Außerdem entweder bs oder rs mittels typ sowie beide zusammen mit mode = 'both'
+    Außerdem entweder gebundene Zustände oder Resonanzen mittels typ sowie beide zusammen mit mode = 'both'
     oder einzeln mit mode = 'single'.
     """
 
@@ -138,20 +138,13 @@ def plot_for_tables_of_xy(typ, l, axis='x', mode='single', save=True):
         plt.close()
 
 
-# Beispielaufrufe (wie bei dir):
-j=0
-while j < 11:
-    #plot_for_tables_of_xy("Bs_mit_trace_root", j, "x", "single")
-    #plot_for_tables_of_xy("Bs_mit_trace_root", j, "y", "single")
-    #plot_for_tables_of_xy("Resonanzen", j, "x")
-    #plot_for_tables_of_xy("Resonanzen", j, "y")
-    #plot_for_tables_of_xy("Bound States", j, "x")
-    #plot_for_tables_of_xy("Bound States", j, "y")
-    plot_for_tables_of_xy("Resonanzen", j, "x", "both")
-    plot_for_tables_of_xy("Resonanzen", j, "y", "both")
-    j += 1
-
-#plot_for_tables_of_xy("Resonanzen", 4, "x", "both")
-#plot_for_tables_of_xy("Resonanzen", 0, "x", "both")
-#plot_for_tables_of_xy("Resonanzen", 4, "y", "both")
-#plot_for_tables_of_xy("Resonanzen", 0, "y", "both")
+# Beispielaufrufe zur Erzeugung der separaten sowie gemischten Konturplots aus der Bachelorarbeit:
+#j=0
+#while j < 11:
+#    plot_for_tables_of_xy("Resonanzen", j, "x")
+#    plot_for_tables_of_xy("Resonanzen", j, "y")
+#    plot_for_tables_of_xy("Bound States", j, "x")
+#    plot_for_tables_of_xy("Bound States", j, "y")
+#    plot_for_tables_of_xy("Resonanzen", j, "x", "both")
+#    plot_for_tables_of_xy("Resonanzen", j, "y", "both")
+#    j += 1

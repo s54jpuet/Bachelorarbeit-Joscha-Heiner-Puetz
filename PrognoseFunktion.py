@@ -7,98 +7,6 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score
 
 
-def first_v0s(l):
-    i = 0
-    first_v0s = []
-    while os.path.isfile(tR.f_name("Bound States", l, i)):
-        try:
-            filename = tR.f_name("Bound States", l, i)
-            data = np.loadtxt(filename, delimiter=",", skiprows=1)
-            data = np.transpose(data)
-            data2 = data[2]
-            first_v0s.append(data2[0])
-
-        except Exception as e:
-            print(f"Fehler beim Lesen der Datei Typ: Resonanzen mit l={l} und i={i}")
-            raise e
-        i = i+1
-    #print(first_v0s)                                                        # gibt alle v0 eines l bei neuen rs aus
-    return first_v0s
-
-#first_v0s(0)
-
-
-
-def division_of_next_bound_state(l):
-    '''
-    Numerischer Beweis, dass asymptotisch abstände zwischen Gliedern bzgl v0 1 approachen
-    '''
-    v0s = np.array(first_v0s(l))
-    indices = np.arange(len(v0s) - 1)
-    divided_v0s = np.empty(len(v0s)-1)
-    for i in range(len(v0s)-1):
-        divided_v0s[i] = v0s[i+1]/v0s[i]
-
-    plt.figure()
-    plt.plot(indices, divided_v0s, marker='o')
-    plt.xlabel('Index')
-    plt.ylabel('v0[n+1] / v0[n]')
-    plt.title('Verhältnis aufeinanderfolgender v0s')
-    plt.grid(True)
-    plt.show()
-    return divided_v0s
-
-#division_of_next_bound_state(0)
-
-
-def eval_c_of_forecast_for_all_l(typ):
-    # ... dein bisheriger Code, der csv_path setzt und df lädt ...
-    # Beispiel (anpassen falls bei dir anders):
-    save_dir = os.path.join(os.getcwd(), "Prognosefunktionen")
-    safe_typ = typ.replace(" ", "")
-    safe_kind = "limk0"  # oder was du oben verwendest
-    csv_path = os.path.join(save_dir, f"forecast_coeffs_{safe_typ}_{safe_kind}.csv")
-    df = pd.read_csv(csv_path, index_col='l')
-
-    # --- NEU: sauber extrahieren & NaNs entfernen ---
-    # Wir brauchen l (Index) und c = c_quad als float, ohne NaNs/Inf
-    l_vals = pd.to_numeric(df.index, errors='coerce').to_numpy(dtype=float)
-    c = pd.to_numeric(df.get('c_quad', pd.Series(index=df.index, dtype=float)), errors='coerce').to_numpy(dtype=float)
-
-    mask = np.isfinite(l_vals) & np.isfinite(c)
-    l_vals = l_vals[mask]
-    c = c[mask]
-
-    # Falls zu wenige Punkte vorhanden sind, defensiv zurückgeben
-    if l_vals.size < 2:
-        # zu wenig für sinnvolle Regression
-        return 0.0, 0.0, 0.0, float(np.nan)
-
-    # Grad des Fits defensiv wählen (max 3, aber < Anzahl Punkte)
-    deg = min(3, int(l_vals.size) - 1)
-    coef = np.polyfit(l_vals, c, deg=deg)  # höchster Grad zuerst
-
-    # auf kubische Koeffizienten (a3 l^3 + b3 l^2 + n3 l + m3) abbilden
-    # fehlende Grade mit 0 auffüllen
-    coef_full = np.zeros(4, dtype=float)
-    coef_full[-(deg+1):] = coef  # rechtsbündig einsetzen
-    a3, b3, n3, m3 = coef_full  # genau 4 Werte
-
-    # R^2 nur berechnen, wenn mind. 2 Punkte & kein NaN
-    try:
-        c_fit = np.polyval(coef_full, l_vals)
-        from sklearn.metrics import r2_score
-        r2_3 = r2_score(c, c_fit) if l_vals.size >= 2 else float('nan')
-    except Exception:
-        r2_3 = float('nan')
-
-    # Wenn du r2 irgendwo ausgibst, gib r2_3 zurück; sonst nur Koeffizienten:
-    return a3, b3, n3, m3
-
-#eval_c_of_forecast_for_all_l("Resonanzen")
-
-
-
 # ---- Helfer ----
 def _ensure_columns(df, cols, index_name='l'):
     """Sorgt dafür, dass df exakt die Spalten 'cols' (in dieser Reihenfolge) hat."""
@@ -289,155 +197,48 @@ if __name__ == "__main__":
 # v0_forcast_func_any_y("Resonanzen", 4, 5.0881106862211904)
 
 
-def plot_v0s_multi_ordnungen(ordnungen, first_v0s, save=True):
-    '''
-    !!!Noch nicht basierend auf Resonanztabellen nur BS bis jetzt!!!
-    mehrere Ordnungen in einem Plot übereinander legen (inklusive separater fits)
-    '''
 
-    plt.figure(figsize=(14, 9))
-    colors = plt.cm.viridis(np.linspace(0, 1, len(ordnungen)))
-    linestyles = ['-', '--', '-.', ':', (0, (3,1,1,1)), (0, (5,2))]
-    
-    all_handles = []
-    all_labels = []
-    
-    for i, l in enumerate(ordnungen):
-        ordner = f"tables/l={l}"
-        dateiname = os.path.join(ordner, f"neue_Boundstates_l={l}.csv")
+def eval_c_of_forecast_for_all_l(typ):
+    '''Hier kann ein ordnungsübergreifender Polynomfit für den Koeffizienten c aus den quadratischen Prognosefunktionen für die berechneten Ordnungen l erzeugt werden'''
+    save_dir = os.path.join(os.getcwd(), "Prognosefunktionen")
+    safe_typ = typ.replace(" ", "")
+    safe_kind = "limk0"  # oder was du oben verwendest
+    csv_path = os.path.join(save_dir, f"forecast_coeffs_{safe_typ}_{safe_kind}.csv")
+    df = pd.read_csv(csv_path, index_col='l')
 
-        # Datei einlesen, Kopfzeile überspringen
-        data = np.loadtxt(dateiname, delimiter=",", skiprows=1)
+    # --- NEU: sauber extrahieren & NaNs entfernen ---
+    # Wir brauchen l (Index) und c = c_quad als float, ohne NaNs/Inf
+    l_vals = pd.to_numeric(df.index, errors='coerce').to_numpy(dtype=float)
+    c = pd.to_numeric(df.get('c_quad', pd.Series(index=df.index, dtype=float)), errors='coerce').to_numpy(dtype=float)
 
-        # Dritte Spalte extrahieren
-        v0s = data[:200, 2]
-        indices = np.arange(len(v0s) - 1) + 1
-        indices2 = np.arange(len(v0s)) + 1
-        dv0s = np.diff(v0s)
-        
-        # Linearer Fit auf Abstände
-        coeffs = np.polyfit(indices, dv0s, deg=1)
-        fit_vals = np.polyval(coeffs, indices)
+    mask = np.isfinite(l_vals) & np.isfinite(c)
+    l_vals = l_vals[mask]
+    c = c[mask]
 
-        # Quadratischer Fit auf v0s
-        coeffs2 = np.polyfit(indices2, v0s, deg=2)
-        fit_vals2 = np.polyval(coeffs2, indices2)
+    # Falls zu wenige Punkte vorhanden sind, defensiv zurückgeben
+    if l_vals.size < 2:
+        # zu wenig für sinnvolle Regression
+        return 0.0, 0.0, 0.0, float(np.nan)
 
-        # Plot: Abstände und Fit
-        h1, = plt.plot(indices, dv0s, 'x', color=colors[i], alpha=0.7, label=f'Δ$v_0$ (Ordnung {l})')
-        h2, = plt.plot(indices, fit_vals, linestyle=linestyles[i%len(linestyles)], color=colors[i], 
-                       label=f'Lin-Fit Δ$v_0$ (Ordnung {l})')
-        # Plot: v0 Werte und quadr. Fit
-        h3, = plt.plot(indices2, v0s, 'o', color=colors[i], fillstyle='none', alpha=0.5, 
-                       label=f'$v_0$ (Ordnung {l})')
-        h4, = plt.plot(indices2, fit_vals2, linestyle=linestyles[i%len(linestyles)], color=colors[i], 
-                       linewidth=1.8, alpha=0.5, label=f'Quad-Fit $v_0$ (Ordnung {l})')
-        
-        # Legendenhandle sammeln, aber nur einmal pro Kurventyp
-        all_handles += [h1, h2, h3, h4]
-        all_labels += [f'Δ$v_0$ (Ordnung {l})', f'Lin-Fit Δ$v_0$ (Ordnung {l})',
-                       f'$v_0$ (Ordnung {l})', f'Quad-Fit $v_0$ (Ordnung {l})']
-    
-    plt.xlabel("# neuer Bound State")
-    plt.ylabel("$v_0$")
-    plt.title("Vergleich mehrerer Ordnungen")
-    plt.tight_layout(rect=[0, 0, 0.75, 1])  # Platz rechts für die Legende lassen
-    plt.legend(
-        all_handles,
-        all_labels,
-        fontsize=9,
-        ncol=1,
-        loc='center left',
-        bbox_to_anchor=(1.02, 0.5)
-    )
-    plt.ylim(0, 100000)
-    plt.xlim(0, 105)
-    plt.grid(True, which="both", linestyle="--", alpha=0.3)
-    if save:
-        save_dir = os.path.join(os.getcwd(), "Plots_Progosefunktion")
-        os.makedirs(save_dir, exist_ok=True)
-        ord_min = min(ordnungen)
-        ord_max = max(ordnungen)
-        filename = os.path.join(
-            save_dir, 
-            f"Vergleich_Ordnungen_{ord_min}-bis-{ord_max}.png"
-        )
-        plt.savefig(filename, dpi=200)
+    # Grad des Fits defensiv wählen (max 3, aber < Anzahl Punkte)
+    deg = min(3, int(l_vals.size) - 1)
+    coef = np.polyfit(l_vals, c, deg=deg)  # höchster Grad zuerst
 
-#plot_v0s_multi_ordnungen(list(range(0,10)), first_v0s)
+    # auf kubische Koeffizienten (a3 l^3 + b3 l^2 + n3 l + m3) abbilden
+    # fehlende Grade mit 0 auffüllen
+    coef_full = np.zeros(4, dtype=float)
+    coef_full[-(deg+1):] = coef  # rechtsbündig einsetzen
+    a3, b3, n3, m3 = coef_full  # genau 4 Werte
 
+    # R^2 nur berechnen, wenn mind. 2 Punkte & kein NaN
+    try:
+        c_fit = np.polyval(coef_full, l_vals)
+        from sklearn.metrics import r2_score
+        r2_3 = r2_score(c, c_fit) if l_vals.size >= 2 else float('nan')
+    except Exception:
+        r2_3 = float('nan')
 
-#nicht richtig!!!!!!
-def v0_forecast_global(max_l):
-    # Alle V0-Werte einsammeln
-    all_v0s = []
-    for l in range(max_l + 1):
-        v0s_l = np.array(first_v0s(l))
-        all_v0s.extend(v0s_l)
-    
-    # Sortieren, falls nicht streng aufsteigend
-    all_v0s = np.sort(np.array(all_v0s))
-    indices = np.arange(len(all_v0s))
-    dv0s = np.diff(all_v0s)
-    indices_dv0 = np.arange(len(dv0s))
-    
-    # Quadratischer Fit auf alle V0-Werte
-    coeffs_quad = np.polyfit(indices, all_v0s, deg=2)
-    fit_v0s = np.polyval(coeffs_quad, indices)
-    chi2_quad = np.sum((all_v0s - fit_v0s)**2)
-    dof_quad = len(indices) - 3
-    chi2_quad_red = chi2_quad / dof_quad if dof_quad > 0 else np.nan
+    # Wenn du r2 irgendwo ausgibst, gib r2_3 zurück; sonst nur Koeffizienten:
+    return a3, b3, n3, m3
 
-    # Linearer Fit auf alle Deltas
-    coeffs_lin = np.polyfit(indices_dv0, dv0s, deg=1)
-    fit_dv0s = np.polyval(coeffs_lin, indices_dv0)
-    chi2_lin = np.sum((dv0s - fit_dv0s)**2)
-    dof_lin = len(indices_dv0) - 2
-    chi2_lin_red = chi2_lin / dof_lin if dof_lin > 0 else np.nan
-
-    # Funktionen zum Zurückgeben
-    def v0_parabola(idx):
-        return coeffs_quad[0]*idx**2 + coeffs_quad[1]*idx + coeffs_quad[2]
-    def v0_step(idx):
-        return coeffs_lin[0]*idx + coeffs_lin[1]
-
-    # Plot
-    plt.figure(figsize=(8,6))
-    plt.plot(indices, all_v0s, 'x', label='$v_0$ Werte global')
-    plt.plot(indices, fit_v0s, '--', label=(
-        f'Globaler quadratischer Fit:\n'
-        f'$a$={coeffs_quad[0]:.4g}, $b$={coeffs_quad[1]:.4g}, $c$={coeffs_quad[2]:.4g}\n'
-        f'$\chi^2_{{red}}$={chi2_quad_red:.2g}'
-    ))
-    plt.plot(indices_dv0, dv0s, 'x', label='Abstände (Δ$v_0$) global')
-    plt.plot(indices_dv0, fit_dv0s, '-', label=(
-        f'Globaler linearer Fit der Abstände:\n'
-        f'$a$={coeffs_lin[0]:.4g}, $b$={coeffs_lin[1]:.4g}\n'
-        f'$\chi^2_{{red}}$={chi2_lin_red:.2g}'
-    ))
-    plt.xlabel("globaler Index / # aller gefundenen Bound States")
-    plt.ylabel("$v_0$")
-    plt.title(f"Globaler Fit aller Bound-State $v_0$ bis l={max_l}")
-    plt.legend()
-    plt.grid(True, which="both", linestyle="--", alpha=0.4)
-    plt.tight_layout()
-
-    # Speicherpfad bauen
-    save_dir = os.path.join(os.getcwd(), "Plots_Progosefunktion")
-    os.makedirs(save_dir, exist_ok=True)
-    filename = os.path.join(save_dir, f"Prognosefunktion_Global_l_max={max_l}.png")
-    plt.savefig(filename, dpi=200)
-    plt.close()
-    
-    return v0_parabola, v0_step
-
-#v0_forecast_global(0)
-#v0_forecast_global(1)
-#v0_forecast_global(2)
-#v0_forecast_global(3)
-#v0_forecast_global(4)
-#v0_forecast_global(5)
-#v0_forecast_global(6)
-#v0_forecast_global(7)
-#v0_forecast_global(8)
-#v0_forecast_global(9)
+#eval_c_of_forecast_for_all_l("Resonanzen")

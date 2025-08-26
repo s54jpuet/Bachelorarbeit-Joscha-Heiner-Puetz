@@ -54,29 +54,3 @@ def find_close_root(f, fx, fy, initial_x, initial_y):
     if not found:
         print("could not find close root")        
     return (x, y, found)
-
-
-def find_roots(f, df, min_x, max_x, step):  #fy ist Ableitung 
-    roots = []
-    x = min_x
-    lastvalue = f(x)
-    print("root search")
-    while x <= max_x:
-        x += step
-        value = f(x)
-        print(f"{value}")
-        if lastvalue * value < 0:
-            dvalue = df(x)
-            print(f"possible root in [{x - step}, {x}] with f={value}, df={dvalue}")
-            if dvalue * value < 0:
-                sol = root_scalar(
-                    f,
-                    bracket= [x - step, x],
-                    method='brentq',
-                    xtol = TOLERANCE
-                )
-
-                if sol.converged:
-                    roots.append(sol.root)
-        lastvalue = value
-    return roots

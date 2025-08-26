@@ -14,7 +14,6 @@ def rs_plot_wavefunction(l_list, v0, x_max_intervall):
    Diese Funktion Plottet die aus den berechneten Konturplots der Resonanzen folgenden Wellenfunktionen aller Lösungen für ein spezifisches v0
    '''
 
-
    all_a = {}  # korrespondierend zu x=qr0
    all_b = {}  # korrespondierend zu y=\kappa*r0
    for i in l_list:
@@ -30,13 +29,13 @@ def rs_plot_wavefunction(l_list, v0, x_max_intervall):
     # Plot-Versuch
 
    x_plot = np.linspace(0, x_max_intervall, x_max_intervall*100)  # gewünschtes Intervall
-
+   print("hallo")
    for l in all_a:
         for a, b in zip(all_a[l], all_b[l]):
             y_plot = rs.radial_of_resonance(l, x_plot, a, b)
             plt.plot(x_plot, y_plot, label=fr"$l={l},\, x = q r_0={a:.2f},\, y = k r_0={b:.2f}$")
 
-   plt.title(f"Radiale Wellenfunktion der Resonanzen für $v_0={v0}$")
+   plt.title(f"Radiale Wellenfunktion der Resonanzen f\u00fcr $v_0={v0}$")
    plt.xlabel(r'$\frac{r}{r_0}$')
    plt.ylabel(r'$\frac{r}{r_0} \cdot R_l$')
    plt.grid(True)
@@ -79,7 +78,7 @@ def bs_plot_wavefunction(l_list, v0, x_max_intervall):
             y = bs.radial_of_bound_states(l, x, a, b)   
             plt.plot(x, y, label=fr"$l={l},\, x = q r_0={a:.2f},\, y = \kappa r_0={b:.2f}$")
 
-    plt.title(f"Radiale Wellenfunktion der gebundenen Zustände für $v_0={v0}$")
+    plt.title(f"Radiale Wellenfunktion der gebundenen Zust\u00e4nde f\u00fcr $v_0={v0}$")
     plt.xlabel(r'$\frac{r}{r_0}$')
     plt.ylabel(r'$\frac{r}{r_0} \cdot R_l$')
     plt.grid(True)

@@ -6,7 +6,7 @@ import tableReading as tR
 
 
 def check_correspondence(l):
-
+    '''Diese Funktion gleicht Paarweise die Werte für neuauftretende Resonanzen und gebundene Zustände ab und überprüft deren Übereinstimmung im Rahmen des gemeinsamen Fehlers'''
     ordner = f"tables/l={l}"
     infile_rs = os.path.join(ordner, f"neue_Resonanzen_l={l}_mit_Fehler.csv")
     infile_bs = os.path.join(ordner, f"neue_Boundstates_l={l}_mit_Fehler.csv")
@@ -59,6 +59,7 @@ def check_correspondence(l):
         "csv": out_csv,
     }
 
+# Aufruf aller berechneten Ordnungen zur Überprüfung derer Korrespondenz
 j = 0
 while j < 11:
     check_correspondence(j)

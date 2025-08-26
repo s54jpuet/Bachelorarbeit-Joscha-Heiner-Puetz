@@ -21,45 +21,6 @@ def heatmap_streuphase2(l, y, v0):
 
 
 
-def plot_heatmap_streuphase_gegen_y(l, y_range, v0_range, num_y=100, num_v0=100):
-    """
-    Plottet eine Heatmap von sin2 für gegebenen Bereich von y (x-Achse), v0 (y-Achse) und Ordnung l.
-    - l: Ordnung
-    - y_range: (y_min, y_max)
-    - v0_range: (v0_min, v0_max)
-    - num_y: Anzahl y-Schritte (Standard: 100)
-    - num_v0: Anzahl v0-Schritte (Standard: 100)
-    """
-    y_vals = np.linspace(y_range[0], y_range[1], num_y)
-    v0_vals = np.linspace(v0_range[0], v0_range[1], num_v0)
-    # Meshgrid für alle Kombinationen
-    YY, VV0 = np.meshgrid(y_vals, v0_vals)
-    # Leeres Array für sin2
-    sin2_map = np.zeros_like(YY)
-    
-    # Berechne sin2 für alle Kombinationen
-    for i in range(num_v0):
-        for j in range(num_y):
-            sin2_map[i, j], _ = heatmap_streuphase2(l, YY[i, j], VV0[i, j])
-    
-    plt.figure(figsize=(9, 6))
-    im = plt.imshow(
-        sin2_map, 
-        aspect='auto', 
-        origin='lower',
-        extent=[y_range[0], y_range[1], v0_range[0], v0_range[1]],
-        cmap='viridis'
-    )
-    plt.colorbar(im, label=r'$\sin^2 \delta$')
-    plt.xlabel('$y$')
-    plt.ylabel('$v_0$')
-    plt.title(f'Heatmap von $\\sin^2 \\delta$ für Ordnung $l={l}$')
-    plt.tight_layout()
-    plt.show()
-
-#plot_heatmap_streuphase_gegen_y(l=2, y_range=(-5, 5), v0_range=(0, 30))
-
-
 
 
 
@@ -169,9 +130,10 @@ def plot_heatmap_streuphase(l, y_range, v0_range, num_y=100, num_v0=100, modus="
         if save:
             plt.savefig(os.path.join(save_dir, filename_base + "_3D_multi.png"), dpi=200)
 
+
+# Aufrufe zur Reproduktion der Heatmaps und des 3D-Plots in der Bachelorarbeit:
 #l=0
 #while l < 11:
 #    plot_heatmap_streuphase(l, y_range=(0.01, 30), v0_range=(0, 500), modus="y", plot_3d= False)
 #    l += 1
-plot_heatmap_streuphase(l=4, y_range=(0.00001, 30), num_y=10000, v0_range=(0, 500), modus="y", plot_3d= True)
-#plot_heatmap_streuphase_gegen_x(l=3, y_range=(0.01, 30), v0_range=(0, 500))
+#plot_heatmap_streuphase(l=4, y_range=(0.00001, 30), num_y=10000, v0_range=(0, 500), modus="y", plot_3d= True)
