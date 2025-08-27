@@ -23,13 +23,10 @@ def rs_plot_wavefunction(l_list, v0, x_max_intervall):
        all_a[i] = x
        all_b[i] = y
 
-    #print(all_a)
-    #print(all_b)
 
     # Plot-Versuch
 
    x_plot = np.linspace(0, x_max_intervall, x_max_intervall*100)  # gewünschtes Intervall
-   print("hallo")
    for l in all_a:
         for a, b in zip(all_a[l], all_b[l]):
             y_plot = rs.radial_of_resonance(l, x_plot, a, b)

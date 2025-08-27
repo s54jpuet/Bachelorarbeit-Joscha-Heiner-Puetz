@@ -13,7 +13,6 @@ def read_line(typ, l, i):
         filename = f_name(typ, l, i)
         data = np.loadtxt(filename, delimiter = ",", skiprows=1)
         data = np.transpose(data)
-        #print(type(data[0]))
         return data[0], data[1], data[2]
     
     except Exception as e: 
@@ -53,7 +52,7 @@ def read_line_Resonanzen(l, i):
 def read_line_Bound_States(l, i):
     return read_line("Bound States", l, i)
 
-def read_line_Bound_States2(l, i):                           #temporär
+def read_line_Bound_States2(l, i):                           
     return read_line("Bs_mit_trace_root", l, i)
 
 def check_min_v0(typ, l, v0_max):
@@ -78,7 +77,7 @@ def check_min_v0(typ, l, v0_max):
         print(f"Fehler beim Lesen der Datei Typ: {typ} mit l={l} und i={i}")
         raise e
 
-check_min_v0("Resonanzen", 4, 100)
+#check_min_v0("Resonanzen", 4, 100)
 
 def find_ymin_for_min_v0(l):
     '''
@@ -96,7 +95,7 @@ def find_ymin_for_min_v0(l):
         print(f"Fehler beim Lesen der Datei Typ: {typ} mit l={l} und i={i}")
         raise e
 
-find_ymin_for_min_v0(4)
+#find_ymin_for_min_v0(4)
 
 
 def check_max_l(typ, v0_max):
@@ -107,7 +106,6 @@ def check_max_l(typ, v0_max):
     while True:
         result = check_min_v0(typ, l, v0_max)
         if not result:
-            #print(l-1)
             return l  # Das letzte l, das in v0 liegt
         l += 1
 
@@ -116,9 +114,6 @@ def check_max_l(typ, v0_max):
 
 def find_xy_for_v0(typ, l, v0_input):
     x, y, v0 = read_order(typ, l)
-    #print("Länge x:", len(x))
-    #print("Länge y:", len(y))
-    #print("Länge v0:", len(v0))
     if len(x) != len(y) and len(y) != len(v0):
         print(f"Fehler: Die Länge der Arraysx, y, v0 ist verschieden für l={l}!")
     x_match = []

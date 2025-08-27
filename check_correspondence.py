@@ -59,7 +59,7 @@ def check_correspondence(l):
         "csv": out_csv,
     }
 
-# Aufruf aller berechneten Ordnungen zur Überprüfung derer Korrespondenz
+# Aufruf aller berechneten Ordnungen zur Überprüfung derer Korrespondenz:
 j = 0
 while j < 11:
     check_correspondence(j)

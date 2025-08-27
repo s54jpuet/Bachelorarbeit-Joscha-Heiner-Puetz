@@ -117,9 +117,9 @@ def v0_forecast_func(typ, l, kind="lim_k_0"):
     df.to_csv(csv_path)
 
     latex_headers = {
-        'a_quad': r'$a_{\mathrm{quad}}$',
-        'b_quad': r'$b_{\mathrm{quad}}$',
-        'c_quad': r'$c_{\mathrm{quad}}$',
+        'a_quad': r'$a$',
+        'b_quad': r'$b_{\ell}$',
+        'c_quad': r'$c_{\ell}$',
         'v0_first': r'$v_0^{(1)}$'
     }
     df_latex = df.rename(columns=latex_headers)
