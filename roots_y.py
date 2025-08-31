@@ -4,11 +4,10 @@ import numpy as np
 TOLERANCE = 1e-12
 MAX_ITERATIONS = 200
 
-def roots_y(f, fy, y, min_v0, max_v0, step):  #fy ist Ableitung 
+def roots_y(f, fy, y, min_v0, max_v0, step):  #fy ist partielle Ableitung der eingebenen Funktion
     roots = []
     v0 = min_v0
     lastvalue = f(y, v0)
-    #print("root search")
     while v0 <= max_v0:
         if type(step) is float:
             s = step
@@ -16,10 +15,8 @@ def roots_y(f, fy, y, min_v0, max_v0, step):  #fy ist Ableitung
             s = step(v0)
         v0 += s
         value = f(y, v0)
-        #print(f"{value}")
         if lastvalue * value < 0:
             dvalue = fy(y, v0)
-            #print(f"possible root in [{v0 - step}, {v0}] with f={value}, df={dvalue}")
             if dvalue * value > 0:
                 sol = root_scalar(
                     lambda v0: f(y, v0),
@@ -35,7 +32,7 @@ def roots_y(f, fy, y, min_v0, max_v0, step):  #fy ist Ableitung
 
 def find_close_root(f, fx, fy, initial_x, initial_y):
     '''
-    x ist im koordinatensystem nach rechts, y nach oben
+    x ist im Koordinatensystem nach rechts, y nach oben (nicht die verwendeten Substitutionen aus der Bachelorarbeit)
     '''
     x = initial_x
     y = initial_y

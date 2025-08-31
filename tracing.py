@@ -22,22 +22,18 @@ def trace_root(initial_x, initial_y, f, fx, fy, distance, max_iterations = MAX_I
         dy = fy(x, y)
         length = np.sqrt(dx * dx + dy * dy)
         if length < TOLERANCE or np.abs(dy) < TOLERANCE:
-            print("This seems to be a local extremum. We cannot move anywhere with confidence!")
+            print("Dies scheint ein lokales Extremum zu sein.")
             break
         dx, dy = dx / length, dy / length
 
         sign = np.sign(dy)
         move_x = sign * move_delta * dy
         move_y = -sign * move_delta * dx
-
-        #xf = lambda y: f(x + move_x, y)
-        #xdf = lambda y: fy(x + move_x, y)
-        #print(f"moving from ({x}, {y}) to (nx, ny) = ({x + move_x}, {y + move_y}): f(nx, ny) = {f(x+move_x, y+move_y)}")
         new_x, new_y, found = find_close_root(f, fx, fy, x + move_x, y + move_y)
         if found:
             x, y = new_x, new_y
         else:
-            print(f"Aborted trying to find a root at ({x}, {y}) because no close root could be found.")
+            print(f"Abbruch der Suche nach roots bei ({x}, {y}), weil keine nahegelegene Nullstelle gefunden werden konnte.")
             break
         delta = x - last_x
         iter_count += 1
@@ -49,6 +45,6 @@ def trace_root(initial_x, initial_y, f, fx, fy, distance, max_iterations = MAX_I
             rootsy.append(y)
             iter_count = 0
         elif iter_count > max_iterations:
-            print(f"Aborted root search at x={x} due to reaching the max iteration count of {max_iterations}")
+            print(f"Abbruch der Suche nach roots bei x={x} aufgrund des Erreichens der maximalen Iterationen von {max_iterations}.")
             break
     return np.array(rootsx), np.array(rootsy)

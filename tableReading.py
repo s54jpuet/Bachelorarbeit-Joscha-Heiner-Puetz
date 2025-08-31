@@ -19,8 +19,6 @@ def read_line(typ, l, i):
         print(f"Fehler beim Lesen der Datei Typ: {typ} mit l={l} und i={i}")
         raise e
     
-#read_line("Resonanzen", 0, 1)
-
 def read_order(typ, l):
     '''
     Alle Linien in Konturplot von bestimmtem l für typ bs oder rs als 3 Arrays mit x, y und v0
@@ -36,9 +34,6 @@ def read_order(typ, l):
         v0.extend(n_v0)
         i = i+1
     return np.array(x), np.array(y), np.array(v0)
-
-#read_order("Resonanzen", 0)
-
 
 def read_order_Resonanzen(l):
     return read_order("Resonanzen", l)
@@ -75,8 +70,6 @@ def check_min_v0(typ, l, v0_max):
         print(f"Fehler beim Lesen der Datei Typ: {typ} mit l={l} und i={i}")
         raise e
 
-#check_min_v0("Resonanzen", 4, 100)
-
 def find_ymin_for_min_v0(l):
     '''
     Finde den kleinsten v0 Wert für "Resonanzen" einer Ordnung
@@ -93,9 +86,6 @@ def find_ymin_for_min_v0(l):
         print(f"Fehler beim Lesen der Datei Typ: {typ} mit l={l} und i={i}")
         raise e
 
-#find_ymin_for_min_v0(4)
-
-
 def check_max_l(typ, v0_max):
     """
     Findet das maximale l, für das der minimale v0 kleiner als v0_max ist.
@@ -104,24 +94,20 @@ def check_max_l(typ, v0_max):
     while True:
         result = check_min_v0(typ, l, v0_max)
         if not result:
-            return l  # Das letzte l, das in v0 liegt
+            return l  # Das letzte l, das innerhalb von v0 liegt
         l += 1
-
-#check_max_l("Resonanzen", 20)
 
 
 def find_xy_for_v0(typ, l, v0_input):
+    '''Findet zugehörige x und y Werte für angegebenes v0 eines Types einer Ordnung'''
     x, y, v0 = read_order(typ, l)
     if len(x) != len(y) and len(y) != len(v0):
         print(f"Fehler: Die Länge der Arraysx, y, v0 ist verschieden für l={l}!")
     x_match = []
     y_match = []
 
-    # Alle Crossings entsprechend v0 suchen
     for i in range(1, len(v0)):
         if v0[i-1] < v0_input and v0[i] >= v0_input:
             x_match.append(x[i])
             y_match.append(y[i])
     return x_match, y_match
-
-#find_xy_for_v0("Resonanzen", 0, 100)
