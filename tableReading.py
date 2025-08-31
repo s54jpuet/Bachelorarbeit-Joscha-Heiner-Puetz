@@ -52,8 +52,6 @@ def read_line_Resonanzen(l, i):
 def read_line_Bound_States(l, i):
     return read_line("Bound States", l, i)
 
-def read_line_Bound_States2(l, i):                           
-    return read_line("Bs_mit_trace_root", l, i)
 
 def check_min_v0(typ, l, v0_max):
     '''

@@ -42,8 +42,6 @@ def bound_states_dy(l, y, v0):
     dA_dy  = 1j*(1/x) + 1j*y*(y/(x**3))
 
     right_term = np.real(dA_dy * B + A * dB_dy)
-
-    # Gesamtableitung
     return left_term - right_term
 
 
@@ -51,7 +49,7 @@ def bound_states_dy(l, y, v0):
 # partielle Ableitung nach v0 für Bedingung für gebundene Zustände
 def bound_states_dv0(l, y, v0):
     x = to_x(y, v0)
-    dx_dv0 = 1/(2*x)  # d(x)/dv0
+    dx_dv0 = 1/(2*x) 
 
     jl_x = jl(l, x)
     djl_x = djl(l, x)
@@ -64,8 +62,6 @@ def bound_states_dv0(l, y, v0):
     quot = dhy / hy
     d_1_over_x_dv0 = -1/(2*x**3)
     right_term = np.real(1j * y * d_1_over_x_dv0 * quot)
-
-    # Gesamtableitung
     return left_term - right_term
 
 #Funktion zur Berechnung der radialen Wellenfunktion (inside legt fest, ob r<r0 ist (für inside<1 der Fall, da inside=r/r0))
