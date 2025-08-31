@@ -211,7 +211,6 @@ def eval_c_of_forecast_for_all_l(typ):
     a3, b3, n3, m3 = coef_full  
     try:
         c_fit = np.polyval(coef_full, l_vals)
-        from sklearn.metrics import r2_score
         r2_3 = r2_score(c, c_fit) if l_vals.size >= 2 else float('nan')
     except Exception:
         r2_3 = float('nan')
