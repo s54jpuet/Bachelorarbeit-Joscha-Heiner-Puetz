@@ -30,6 +30,7 @@ def roots_y(f, fy, y, min_v0, max_v0, step):  #fy ist partielle Ableitung der ei
         lastvalue = value
     return roots
 
+
 def find_close_root(f, fx, fy, initial_x, initial_y):
     '''
     x ist im Koordinatensystem nach rechts, y nach oben (nicht die verwendeten Substitutionen aus der Bachelorarbeit)
@@ -45,7 +46,7 @@ def find_close_root(f, fx, fy, initial_x, initial_y):
         x -= denom / length_squared * dx
         y -= denom / length_squared * dy
 
-        if np.abs(denom) < TOLERANCE:
+        if np.abs(denom) < 1e-8:
             found = True
             break
     if not found:

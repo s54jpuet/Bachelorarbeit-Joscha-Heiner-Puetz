@@ -130,6 +130,6 @@ def plot_heatmap_streuphase(l, y_range, v0_range, num_y=100, num_v0=100, modus="
 # Aufrufe zur Reproduktion der Heatmaps und des 3D-Plots in der Bachelorarbeit:
 l=0
 while l < 11:
-    plot_heatmap_streuphase(l, y_range=(0.01, 30), v0_range=(0, 500), modus="y", plot_3d= False)
+    plot_heatmap_streuphase(l, y_range=(0.01, 30), v0_range=(0, 500), modus="y", plot_3d= True)
     l += 1
 plot_heatmap_streuphase(l=4, y_range=(0.00001, 30), num_y=10000, v0_range=(0, 500), modus="y", plot_3d= True)
