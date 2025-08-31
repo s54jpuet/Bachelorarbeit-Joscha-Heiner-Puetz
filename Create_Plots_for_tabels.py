@@ -20,7 +20,7 @@ def plot_for_tables_of_xy(typ, l, axis='x', mode='single', save=True):
     # 1) Wahl der Abszisse und Beschriftung
     if axis == 'y':
         col_idx = 1
-        xlabel = r'$y$'
+        xlabel = r'$y_{R/B}$'
     else:
         col_idx = 0
         if mode == 'single':
@@ -31,8 +31,7 @@ def plot_for_tables_of_xy(typ, l, axis='x', mode='single', save=True):
             elif typ == "Bs_mit_trace_root":  # temporär
                 xlabel = r'$x_B = \sqrt{v_0 - y_B^2}$ für gebundene Zustände'
         else:
-            xlabel = (r'$x_R = \sqrt{y_R^2 + v_0}$ für Resonanzen,  '
-                      r'$x_B = \sqrt{v_0 - y_B^2}$ für gebundene Zustände')
+            xlabel = r'$x_{R/B}$'
     
     # 2) Farben und Figuren-Setup
     # Für 'single' bleibt die bisherige Farbwahl (nach l).
