@@ -29,7 +29,7 @@ def numerator(y, v0, l):
     return (x * j_l_prime_x / j_l_x) * j_l_y - y * j_l_prime_y
 
 
-# partielle Ableitung des Nenners nach y für Bedingung für Resonanzen
+# partielle Ableitung des Nenners nach y für die Bedingung für Resonanzen
 def denominator_dy(y, v0, l):
     x = to_x(y, v0)
     gx = to_x_dx(y, v0)             
@@ -48,7 +48,7 @@ def denominator_dy(y, v0, l):
     Fy  = y*npp + (1.0 - alpha)*np - alpha_prime*gx*n
     return Fy
 
-# partielle Ableitung des Nenners nach v0 für Bedingung für Resonanzen
+# partielle Ableitung des Nenners nach v0 für die Bedingung für Resonanzen
 def denominator_dv0(y, v0, l):  
      g = to_x(y, v0)
      g_prime = to_x_dv0(y, v0)
@@ -63,7 +63,7 @@ def denominator_dv0(y, v0, l):
      return -1.0 * yn * g_prime * (f1 - f2 + f3) / (jn * jn)
 
 
-#Funktion zur Berechnung der radialen Wellenfunktion
+# Funktion zur Berechnung der radialen Wellenfunktion
 def radial_of_resonance(l, x, a, b, A=1):
     denom = jl(l, b) * dyl(l, b) * b - djl(l, b) * yl(l, b) * b
 
